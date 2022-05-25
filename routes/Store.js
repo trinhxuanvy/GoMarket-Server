@@ -15,4 +15,5 @@ router.patch(
   storeController.updateStoreToVerifiedStore,
 );
 router.patch('/api/v1/store/block/:_id', storeController.blockStore);
+router.patch('/api/v1/store/verify', storeController.verifyStore);
 module.exports = router;

@@ -12,6 +12,10 @@ const Store = new Schema(
       ref: "User",
       required: true,
     },
+    ownerName: {
+      type: String,
+      required: true,
+    },
     ward: { type: String, required: true },
     district: { type: String, required: true },
     province: {

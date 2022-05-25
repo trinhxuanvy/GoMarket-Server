@@ -1,4 +1,5 @@
-const Store = require('../models/Store');
+const Store = require("../models/Store");
+const pageSize = 2;
 
 exports.getStoreById = async (req, res, next) => {
   try {
@@ -13,8 +14,18 @@ exports.getStoreById = async (req, res, next) => {
 };
 exports.getAllStore = async (req, res, next) => {
   try {
-    const store = await Store.find();
-    res.send(store);
+    const queryObj = req.query?.search ? {
+      $or: [
+        { storeName: { $regex: req.query.search, $options: "i" } },
+        { ownerName: { $regex: req.query.search, $options: "i" } },
+      ],
+    } : {};
+    const startItem = (req.query.page - 1) * pageSize;
+    const endItem = req.query.page * pageSize;
+    const allStore = await Store.find(queryObj);
+    const total = allStore.length;
+    const store = allStore.slice(startItem, endItem);
+    res.send({ total, store });
   } catch (error) {
     res.send({
       status: 500,
@@ -38,6 +49,7 @@ exports.createStore = async (req, res, next) => {
     const store = new Store({
       storeName: req.body.storeName,
       owner: req.body.owner,
+      ownerName: req.body.ownerName,
       ward: req.body.ward,
       district: req.body.district,
       province: req.body.province,
@@ -76,6 +88,7 @@ exports.updateStore = async (req, res, next) => {
     const store = await Store.findOneAndReplace(req.params._id, {
       storeName: req.body.storeName,
       owner: req.body.owner,
+      ownerName: req.body.ownerName,
       ward: req.body.ward,
       district: req.body.district,
       province: req.body.province,
@@ -108,3 +121,18 @@ exports.blockStore = async (req, res, next) => {
     });
   }
 };
+exports.verifyStore = async (req, res, next) => {
+  try {
+    let store = await Store.findByIdAndUpdate(req.body.id, {
+      status: 1,
+    });
+    store.status = 1;
+    res.send(store);
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: { error },
+    });
+  }
+};
+
