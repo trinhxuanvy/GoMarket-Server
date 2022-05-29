@@ -65,7 +65,9 @@ router.post("/api/v1/:apiName", async (req, res) => {
 
 router.post("/api/v1/store/verify", (req, res) => {
   axios
-    .patch(`http://localhost:8000/api/v1/store/verify`, req.body)
+    .patch(`http://localhost:8000/api/v1/store/verify`, req.body, {
+      headers: req.headers,
+    })
     .then((response) => {
       res.send(response.data);
     })
@@ -77,7 +79,11 @@ router.post("/api/v1/store/verify", (req, res) => {
 router.post("/api/v1/store/block", (req, res) => {
   console.log(req.body);
   axios
-    .patch(`http://localhost:8000/api/v1/store/block/${req.body.id}`)
+    .patch(
+      `http://localhost:8000/api/v1/store/block/${req.body.id}`,
+      {},
+      { headers: req.headers }
+    )
     .then((response) => {
       res.send(response.data);
     })
