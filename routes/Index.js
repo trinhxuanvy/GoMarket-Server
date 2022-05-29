@@ -1,8 +1,9 @@
-const categoryRouter = require('./Category');
-const userRouter = require('./User');
-const storeRouter = require('./Store');
-const orderRouter = require('./Order');
-const uploadFileRoute = require('./UploadFile');
+const categoryRouter = require("./Category");
+const userRouter = require("./User");
+const storeRouter = require("./Store");
+const orderRouter = require("./Order");
+const uploadFileRoute = require("./UploadFile");
+const authRouter = require("./Auth");
 
 function route(app) {
   app.use(categoryRouter);
@@ -10,6 +11,7 @@ function route(app) {
   app.use(storeRouter);
   app.use(orderRouter);
   app.use(uploadFileRoute);
+  app.use(authRouter);
 }
 
 module.exports = route;

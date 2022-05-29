@@ -8,7 +8,8 @@ const {
 } = require("firebase/storage");
 const dotenv = require("dotenv");
 const uuid = require("uuid");
-
+const tmp = require("tmp");
+const fs = require("fs");
 dotenv.config();
 
 const firebaseConfig = {
@@ -25,33 +26,73 @@ initializeApp(firebaseConfig);
 
 const storage = getStorage();
 const metadata = {
-  contentType: "image/jpg",
+  contentType: "image/png",
 };
 
+// exports.uploadImage = (req, res, next) => {
+//   console.log(req.body);
+
+//   const buffer = Buffer.from(req.body["image"], "base64");
+//   const originalName = req.body.originalName;
+//   const storageRef = ref(storage, "images/" + uuid.v4());
+//   const uploadTask = uploadBytesResumable(storageRef, buffer, metadata);
+//   res.writeHead(200, {
+//     "Content-Type": "text/event-stream",
+//     "Cache-Control": "no-cache",
+//     "Connection": "keep-alive",
+//   });
+//   uploadTask.on(
+//     "state_changed",
+//     (snapshot) => {
+//       const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+
+//       switch (snapshot.state) {
+//         case "paused":
+//           console.log("Upload is paused");
+//           break;
+//         case "running":
+//           console.log("Upload is running");
+//           break;
+//       }
+//     },
+//     (error) => {
+//       switch (error.code) {
+//         case "storage/unauthorized":
+//           break;
+//         case "storage/canceled":
+//           break;
+//         case "storage/unknown":
+//           break;
+//       }
+//     },
+//     () => {
+//       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+//         res.send(downloadURL);
+//       });
+//     }
+//   );
+// };
+
+function base64ToUnitArray(base64Url) {
+  const image = base64Url.replace(/^[^,]+,/, '');
+  const byteCharacters = atob(image);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  return new Uint8Array(byteNumbers);
+}
+
 exports.uploadImage = (req, res, next) => {
-  const buffer = Buffer.from(req.body.image, "base64");
-  const originalName = req.body.originalName;
-  const storageRef = ref(storage, "images/" + uuid.v4());
-  const uploadTask = uploadBytesResumable(storageRef, buffer, metadata);
-  res.writeHead(200, {
-    "Content-Type": "text/event-stream",
-    "Cache-Control": "no-cache",
-    "Connection": "keep-alive",
-  });
+  const byteArray = base64ToUnitArray(req.body.image);
+  const storageRef = ref(storage, `images/${uuid.v4()}.${req.body.extension}`);
+  const uploadTask = uploadBytesResumable(storageRef, byteArray, { contentType: req.body.type });
+
   uploadTask.on(
     "state_changed",
     (snapshot) => {
       const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
 
-      var interval = setInterval(function () {
-        res.write("data: " + progress + "\n\n");
-      }, 0);
-
-      // close
-      res.on("close", () => {
-        clearInterval(interval);
-        res.end();
-      });
       switch (snapshot.state) {
         case "paused":
           console.log("Upload is paused");
@@ -73,6 +114,7 @@ exports.uploadImage = (req, res, next) => {
     },
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        console.log(downloadURL)
         res.send(downloadURL);
       });
     }

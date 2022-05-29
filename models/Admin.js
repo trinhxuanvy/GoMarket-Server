@@ -1,23 +1,24 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 
-const User = new Schema(
+const Admin = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      default: "",
     },
     gender: {
       type: String,
-      required: true,
+      default: "",
     },
     dateOfBirth: {
       type: Date,
-      required: true,
+      default: Date.now(),
     },
     identity: {
       type: String,
-      required: true,
+      default: "",
     },
     avatar: {
       type: String,
@@ -33,7 +34,7 @@ const User = new Schema(
     },
     phone: {
       type: String,
-      required: true,
+      default: "",
     },
     email: {
       type: String,
@@ -43,15 +44,15 @@ const User = new Schema(
       type: String,
       required: true,
     },
-    ward: { type: String, required: true },
-    district: { type: String, required: true },
+    ward: { type: String, default: "" },
+    district: { type: String, default: "" },
     province: {
       type: String,
-      required: true,
+      default: "",
     },
     address: {
       type: String,
-      required: true,
+      default: "",
     },
     cart: {
       type: Array,
@@ -69,8 +70,16 @@ const User = new Schema(
   {
     timestamps: true,
     versionKey: false,
-    collection: "User",
+    collection: "Admin",
   }
 );
 
-module.exports = mongoose.model("User", User);
+Admin.pre("save", function () {
+  this.password = bcrypt.hashSync(this.password, 12);
+});
+
+Admin.methods.validPassword = function (password) {
+  return bcrypt.compareSync(password, this.password);
+};
+
+module.exports = mongoose.model("Admin", Admin);

@@ -3,7 +3,7 @@ const pageSize = 2;
 
 exports.getStoreById = async (req, res, next) => {
   try {
-    const store = await Store.find({ _id: req.params._id });
+    const store = await Store.findOne({ _id: req.params._id });
     res.send(store);
   } catch (error) {
     res.send({
@@ -85,20 +85,15 @@ exports.updateStoreToVerifiedStore = async (req, res, next) => {
 };
 exports.updateStore = async (req, res, next) => {
   try {
-    const store = await Store.findOneAndReplace(req.params._id, {
-      storeName: req.body.storeName,
-      owner: req.body.owner,
-      ownerName: req.body.ownerName,
-      ward: req.body.ward,
-      district: req.body.district,
-      province: req.body.province,
-      address: req.body.address,
-      tax: req.body.tax,
-      status: req.body.status,
-      rating: req.body.rating,
-      certification: req.body.certification,
-      businessLicense: req.body.businessLicense,
-      disable: req.body.disable,
+    const store = await Store.findByIdAndUpdate(req.params._id, {
+      storeName: req.body?.storeName,
+      ward: req.body?.ward,
+      district: req.body?.district,
+      province: req.body?.province,
+      address: req.body?.address,
+      tax: req.body?.tax,
+      certification: req.body?.certification,
+      businessLicense: req.body?.businessLicense,
     });
     res.send(store);
   } catch (error) {
@@ -110,10 +105,18 @@ exports.updateStore = async (req, res, next) => {
 };
 exports.blockStore = async (req, res, next) => {
   try {
-    const store = await Store.findByIdAndUpdate(req.params._id, {
-      disable: true,
-    });
-    res.send(store);
+    const store = await Store.findById(req.params._id);
+
+    if (store?._id) {
+      await Store.updateOne({ _id: req.params._id }, { disable: !store?.disable });
+      res.send(store);
+    } else {
+      res.send({
+        status: 500,
+        message: { error },
+      });
+    }
+
   } catch (error) {
     res.send({
       status: 500,
