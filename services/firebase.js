@@ -10,6 +10,7 @@ const dotenv = require("dotenv");
 const uuid = require("uuid");
 const tmp = require("tmp");
 const fs = require("fs");
+const atob = require("atob");
 dotenv.config();
 
 const firebaseConfig = {
@@ -74,7 +75,7 @@ const metadata = {
 // };
 
 function base64ToUnitArray(base64Url) {
-  const image = base64Url.replace(/^[^,]+,/, '');
+  const image = base64Url.replace(/^[^,]+,/, "");
   const byteCharacters = atob(image);
   const byteNumbers = new Array(byteCharacters.length);
   for (let i = 0; i < byteCharacters.length; i++) {
@@ -84,9 +85,12 @@ function base64ToUnitArray(base64Url) {
 }
 
 exports.uploadImage = (req, res, next) => {
+  console.log("updaload heare");
   const byteArray = base64ToUnitArray(req.body.image);
   const storageRef = ref(storage, `images/${uuid.v4()}.${req.body.extension}`);
-  const uploadTask = uploadBytesResumable(storageRef, byteArray, { contentType: req.body.type });
+  const uploadTask = uploadBytesResumable(storageRef, byteArray, {
+    contentType: req.body.type,
+  });
 
   uploadTask.on(
     "state_changed",
@@ -114,7 +118,7 @@ exports.uploadImage = (req, res, next) => {
     },
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        console.log(downloadURL)
+        console.log(downloadURL);
         res.send(downloadURL);
       });
     }

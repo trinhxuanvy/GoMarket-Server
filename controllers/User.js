@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require("../models/User");
 
 exports.getUser = async (req, res, next) => {
   try {
@@ -7,14 +7,13 @@ exports.getUser = async (req, res, next) => {
   } catch (error) {
     res.send({
       status: 500,
-      message: { err: 'An error occurred' },
+      message: { err: "An error occurred" },
     });
   }
 };
 
 exports.postUser = async (req, res, next) => {
   try {
-    console.log(req.body);
     const newUser = new User({
       name: req.body.name,
       email: req.body.email,
@@ -41,13 +40,13 @@ exports.postUser = async (req, res, next) => {
     } else {
       res.send({
         status: 500,
-        message: { err: 'An error occurred' },
+        message: { err: "An error occurred" },
       });
     }
   } catch (error) {
     res.send({
       status: 500,
-      message: { err: 'An error occurred' },
+      message: { err: "An error occurred" },
     });
   }
 };

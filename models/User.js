@@ -1,23 +1,24 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 
 const User = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      default: "",
     },
     gender: {
       type: String,
-      required: true,
+      default: "",
     },
     dateOfBirth: {
       type: Date,
-      required: true,
+      default: Date.now(),
     },
     identity: {
       type: String,
-      required: true,
+      default: "",
     },
     userType: {
       type: Number,
@@ -37,7 +38,7 @@ const User = new Schema(
     },
     phone: {
       type: String,
-      required: true,
+      default: "",
     },
     email: {
       type: String,
@@ -52,15 +53,15 @@ const User = new Schema(
       default: 0,
       min: 0,
     },
-    ward: { type: String, required: true },
-    district: { type: String, required: true },
+    ward: { type: String, default: "" },
+    district: { type: String, default: "" },
     province: {
       type: String,
-      required: true,
+      default: "",
     },
     address: {
       type: String,
-      required: true,
+      default: "",
     },
     cart: {
       type: Array,
@@ -68,19 +69,19 @@ const User = new Schema(
     },
     delivery: [
       {
-        ward: { type: String, required: true },
-        district: { type: String, required: true },
+        ward: { type: String, default: "" },
+        district: { type: String, default: "" },
         province: {
           type: String,
-          required: true,
+          default: "",
         },
         address: {
           type: String,
-          required: true,
+          default: "",
         },
         setDefault: {
           type: Boolean,
-          default: false,
+          default: "",
         },
       },
     ],
@@ -92,6 +93,10 @@ const User = new Schema(
       type: Boolean,
       default: false,
     },
+    isLogged: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
@@ -99,5 +104,13 @@ const User = new Schema(
     collection: "User",
   }
 );
+
+User.pre("save", function () {
+  this.password = bcrypt.hashSync(this.password, 12);
+});
+
+User.methods.validPassword = function (password) {
+  return bcrypt.compareSync(password, this.password);
+};
 
 module.exports = mongoose.model("User", User);
