@@ -5,26 +5,26 @@ const Store = new Schema(
   {
     storeName: {
       type: String,
-      required: true,
+      default: "",
     },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      default: "",
     },
     ownerName: {
       type: String,
-      required: true,
+      default: "",
     },
-    ward: { type: String, required: true },
-    district: { type: String, required: true },
+    ward: { type: String, default: "" },
+    district: { type: String, default: "" },
     province: {
       type: String,
-      required: true,
+      default: "",
     },
     address: {
       type: String,
-      required: true,
+      default: "",
     },
     tax: {
       type: String,

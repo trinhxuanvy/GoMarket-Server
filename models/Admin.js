@@ -66,6 +66,10 @@ const Admin = new Schema(
       type: Boolean,
       default: false,
     },
+    isLogged: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
