@@ -2,6 +2,18 @@ const Product = require("../models/Product");
 const Category = require("../models/Category");
 const Store = require("../models/Store");
 
+exports.getProductById = async (req, res, next) => {
+  try {
+    const product = await Product.findOne({ _id: req.params._id });
+    res.send(product);
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: { error },
+    });
+  }
+};
+
 exports.getProduct = async (req, res, next) => {
   try {
     const products = await Product.find();
@@ -47,6 +59,27 @@ exports.postProduct = async (req, res, next) => {
     res.send({
       status: 500,
       message: { err: "An error occurred" },
+    });
+  }
+};
+
+exports.getAllProduct = async (req, res, next) => {
+  try {
+    const queryObj = req.query?.search ? {
+      $or: [
+        { storeName: { $regex: req.query.search, $options: "i" } },
+        { productName: { $regex: req.query.search, $options: "i" } },
+      ],
+    } : {};
+    const allProduct = await Product.find(queryObj);
+    const total = allProduct.length;
+    const product = allProduct;
+    console.log(product);
+    res.send({ total, product });
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: { error },
     });
   }
 };
