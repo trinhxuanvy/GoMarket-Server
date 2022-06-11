@@ -1,7 +1,6 @@
 const Admin = require("../models/Admin");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const { async } = require("@firebase/util");
 
 exports.verifyToken = (req, res, next) => {
   const bearerHeader = req.headers?.authorization;
