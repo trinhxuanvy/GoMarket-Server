@@ -20,6 +20,7 @@ router.get("/api/v1/:apiName", (req, res) => {
 });
 
 router.post("/api/v1/:apiName", async (req, res) => {
+  console.log("đwqjdbhfcd");
   switch (req.params.apiName.toLowerCase()) {
     case "uploadfile":
       console.log("oke");
@@ -106,19 +107,19 @@ router.put("/api/v1/:apiName", (req, res) => {
     });
 });
 
-router.get("/api/v1/:apiName/byId", (req, res) => {
-  const queryUrl = `http://localhost:8000/api/v1/${req.params.apiName}`;
-  axios
-    .get(queryUrl, { headers: req.headers })
-    .then((response) => {
-      console.log(response.data);
-      res.send(response.data);
-    })
-    .catch(() => {
-      console.log("lỗi");
-      res.send({ message: "Error" });
-    });
-});
+// router.get("/api/v1/:apiName/byId", (req, res) => {
+//   const queryUrl = `http://localhost:8000/api/v1/${req.params.apiName}`;
+//   axios
+//     .get(queryUrl, { headers: req.headers })
+//     .then((response) => {
+//       console.log(response.data);
+//       res.send(response.data);
+//     })
+//     .catch(() => {
+//       console.log("lỗi");
+//       res.send({ message: "Error" });
+//     });
+// });
 
 router.post("/api/v1/Auth/:type", async (req, res) => {
   switch (req.params.type.toLowerCase()) {
@@ -196,7 +197,7 @@ router.get("/api/v1/store/profile", (req, res) => {
       headers: req.headers,
     })
     .then((response) => {
-      res.send({
+      res.status(200).send({
         status: 200,
         data: {
           store: response.data?.data,
@@ -204,7 +205,7 @@ router.get("/api/v1/store/profile", (req, res) => {
       });
     })
     .catch((error) => {
-      res.send({ status: 404, message: "Error" });
+      res.status(404).send({ status: 404, message: "Error" });
     });
 });
 
@@ -221,7 +222,7 @@ router.get("/api/v1/page/manage-store/all-store", async (req, res) => {
         message: "Error",
       });
     }
-    console.log(allStore.data.data);
+
     res.send({
       status: 200,
       data: {
@@ -258,7 +259,6 @@ router.post("/api/v1/store/profile/update", (req, res) => {
 });
 
 router.get("/api/v1/user/logout", async (req, res) => {
-  console.log("heada");
   axios
     .get(`http://localhost:8000/api/v1/Auth/user/logout`, {
       headers: req.headers,
@@ -280,6 +280,38 @@ router.get("/api/v1/admin/logout", async (req, res) => {
       res.send(response.data);
     })
     .catch((error) => {
+      res.send({ message: "Error" });
+    });
+});
+
+router.get("/api/v1/user/byId", async (req, res, next) => {
+  axios
+    .get(`http://localhost:8000/api/v1/user/byId`, {
+      headers: req.headers,
+    })
+    .then((response) => {
+      res.send(response.data);
+    })
+    .catch((error) => {
+      res.status(404).send({ status: 404, message: "Error" });
+    });
+});
+
+router.post("/api/v1/user/byId/update", async (req, res, next) => {
+  delete req.body[0]._token;
+  console.log(req.body[0]);
+  axios
+    .post(`http://localhost:8000/api/v1/user/byId/update`, req.body[0], {
+      headers: {
+        "content-type": "application/json",
+        authorization: req.headers?.authorization,
+      },
+    })
+    .then((response) => {
+      res.send(response.data);
+    })
+    .catch((error) => {
+      throw error;
       res.send({ message: "Error" });
     });
 });

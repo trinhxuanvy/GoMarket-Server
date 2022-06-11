@@ -101,6 +101,8 @@ exports.updateStore = async (req, res, next) => {
       tax: req.body?.tax,
       certification: req.body?.certification,
       businessLicense: req.body?.businessLicense,
+      logo: req.body?.logo,
+      backgroundLogo: req.body?.backgroundLogo,
     });
     res.send({ status: 200 });
   } catch (error) {

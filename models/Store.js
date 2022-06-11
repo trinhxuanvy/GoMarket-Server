@@ -51,6 +51,14 @@ const Store = new Schema(
       type: Boolean,
       default: false,
     },
+    logo: {
+      type: String,
+      default: "",
+    },
+    backgroundLogo: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
