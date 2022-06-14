@@ -1,6 +1,8 @@
 const Admin = require("../models/Admin");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const { async } = require("@firebase/util");
+const { json } = require("express");
 
 exports.verifyToken = (req, res, next) => {
   const bearerHeader = req.headers?.authorization;
@@ -30,6 +32,7 @@ exports.verifyToken = (req, res, next) => {
         }
 
         req.data = data;
+        // console.log(data);
         next();
       }
     });
@@ -140,9 +143,11 @@ exports.postUserLogin = async (req, res, next) => {
         );
         const bearerHeader = "Bearer " + token;
         await User.updateOne({ _id: user._id }, { isLogged: true });
+        // console.log(user);
 
         res.send({
           bearerHeader,
+          user: JSON.stringify(user),
           status: 200,
           message: "Đăng nhập thành công",
         });

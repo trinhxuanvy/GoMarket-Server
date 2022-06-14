@@ -63,10 +63,22 @@ const User = new Schema(
       type: String,
       default: "",
     },
-    cart: {
-      type: Array,
-      default: [],
-    },
+    cart: [
+      {
+        storeId: { type: Schema.Types.ObjectId, required: true, }, 
+        productId: { type: Schema.Types.ObjectId, required: true, }, 
+        productName: { type: String, required: true, }, 
+        productImg: { type: String, required: true, }, 
+        amount: { type: Number, required: false, default: 1, }, 
+        price: { type: Number, required: true, },
+      }
+    ],
+    cartStore: [
+      {
+        storeId: { type: Schema.Types.ObjectId, required: true, }, 
+        storeName: { type: String, required: true, }, 
+      }
+    ],
     delivery: [
       {
         ward: { type: String, default: "" },
