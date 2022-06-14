@@ -1,11 +1,8 @@
 const Admin = require("../models/Admin");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-<<<<<<< Updated upstream
-=======
 const { async } = require("@firebase/util");
 const { json } = require("express");
->>>>>>> Stashed changes
 
 exports.verifyToken = (req, res, next) => {
   const bearerHeader = req.headers?.authorization;
