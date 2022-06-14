@@ -1,4 +1,5 @@
 const Order = require('../models/Order');
+const User = require("../models/User");
 const { getNextOrderStatus } = require('../utils');
 
 exports.getOrderByShiperId = async (req, res, next) => {
@@ -55,6 +56,75 @@ exports.cancelOrder = async (req, res, next) => {
     res.send({
       status: 500,
       message: { err: 'An error occurred' },
+    });
+  }
+};
+
+exports.createOrder = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.data.id);
+    const storeId = req.body.id;
+    let cart = [];
+    let newcart = [];
+    let newcartstore = [];
+    for(let i = 0; i < user.cart.length; i++)
+    {
+      if(user.cart[i].storeId == storeId)
+      {
+        cart.push(user.cart[i]);
+      }
+      else
+      {
+        newcart.push(user.cart[i]);
+      }
+    }
+
+    for(let i = 0; i < user.cartStore.length; i++)
+    {
+      if(user.cartStore[i].storeId != storeId)
+      {
+        newcartstore.push(user.cartStore[i]);
+      }
+    }
+    const newOrder = new Order({
+      customerId: req.data.id,
+      storeId: req.body.id,
+      subTotal: req.body.subTotal,
+      total: req.body.total,
+      phone: req.body.phone,
+      deliveryAddress: {
+        ward: req.body.ward,
+        district: req.body.district,
+        province: req.body.province,
+        address: req.body.address,
+      },
+      orderDetails: cart
+    });
+
+    console.log(newOrder);
+
+    const saved = await newOrder.save();
+
+    if (saved) {
+      user.cart = newcart;
+      user.cartStore = newcartstore;
+      console.log(user);
+      await User.updateMany({ _id: user._id }, {$pull: { cartStore: {storeId: storeId} },  cart: newcart})
+      let cartAmount = 0;
+      for (let i = 0; i < user.cart.length; i++) {
+        cartAmount += user.cart[i].amount;
+      }
+      res.send({user: JSON.stringify(user), cartAmount});
+    } else {
+      res.send({
+        status: 500,
+        message: { err: "An error occurred" },
+      });
+    }
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: { err: "An error occurred" },
     });
   }
 };

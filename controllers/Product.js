@@ -4,7 +4,9 @@ const Store = require("../models/Store");
 
 exports.getProductById = async (req, res, next) => {
   try {
-    const product = await Product.findOne({ _id: req.params._id });
+    // console.log(req.query.id);
+    const product = await Product.findOne({ _id: req.query.id });
+    // console.log(product);
     res.send(product);
   } catch (error) {
     res.send({
@@ -74,7 +76,7 @@ exports.getAllProduct = async (req, res, next) => {
     const allProduct = await Product.find(queryObj);
     const total = allProduct.length;
     const product = allProduct;
-    console.log(product);
+    // console.log(product);
     res.send({ total, product });
   } catch (error) {
     res.send({

@@ -1,5 +1,6 @@
 const express = require('express');
 const orderController = require('../controllers/Order');
+const authController = require('../controllers/Auth');
 const router = express.Router();
 
 router.get(`/api/v1/order/shipper/:_id`, orderController.getOrderByShiperId);
@@ -9,5 +10,6 @@ router.get(
 );
 router.patch(`/api/v1/order/:_id/status`, orderController.updateOrderStatus);
 router.patch(`/api/v1/order/:_id/cancel`, orderController.cancelOrder);
+router.post(`/api/v1/createorder`,authController.verifyToken, orderController.createOrder);
 
 module.exports = router;

@@ -5,7 +5,7 @@ const Order = new Schema(
   {
     customerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
-    shipperId: { type: Schema.Types.ObjectId, ref: 'Shipper', required: true },
+    shipperId: { type: Schema.Types.ObjectId, ref: 'Shipper', required: false },
     deliveryFeeOfShipper: {
       type: Number,
       default: 0,
@@ -13,10 +13,11 @@ const Order = new Schema(
     paymentMethod: {
       type: String,
       required: true,
+      default: 'Cod'
     },
     status: {
       type: String,
-      default: '',
+      default: 'Open',
     }, // Open -> Confirmed -> Shipping -> Shipped -> Completed -> Cancelled
     olderStatus: {
       type: String,
@@ -49,6 +50,29 @@ const Order = new Schema(
       type: Boolean,
       default: false,
     },
+    orderDetails: [{
+      productId: {
+          type: Schema.Types.ObjectId,
+          required: true,
+        },
+        productName: {
+          type: String,
+          required: true,
+        },
+        productImg: {
+          type: String,
+          required: true,
+        },
+        amount: {
+          type: Number,
+          required: false,
+          default: 1,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+  }]
   },
   {
     timestamps: true,

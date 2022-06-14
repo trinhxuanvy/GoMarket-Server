@@ -16,4 +16,10 @@ router.post(
   userController.updateUserById
 );
 
+router.post(
+    "/api/v1/User/addcart",
+    authController.verifyToken,
+    userController.addCart
+);
+router.get("/api/v1/cartbyidstore",authController.verifyToken, userController.getCartByIdStore);
 module.exports = router;
