@@ -22,3 +22,37 @@ exports.getShipperByStoreId = async (req, res, next) => {
     });
   }
 };
+
+exports.getShipperByIdGateWay = async (req, res, next) => {
+  try {
+    const user = await Shipper.findById(req.data?.id);
+    res.send({
+      status: 200,
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: { err: 'An error occurred' },
+    });
+  }
+};
+
+exports.updateShipperById = async (req, res, next) => {
+  try {
+    const newUser = req.body;
+
+    await Shipper.findByIdAndUpdate(req.data?.id, newUser);
+
+    res.send({
+      status: 200,
+    });
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: { err: 'An error occurred' },
+    });
+  }
+};
