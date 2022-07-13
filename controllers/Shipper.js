@@ -1,5 +1,6 @@
 const Shipper = require('../models/Shipper');
 const Order = require('../models/Order');
+const pageSize = 5;
 
 exports.getShipperById = async (req, res, next) => {
   try {
@@ -60,7 +61,6 @@ exports.updateShipperById = async (req, res, next) => {
 
 exports.getOrder = async (req, res, next) => {
   try {
-    console.log('get');
     const queryObj = req.query?.search
       ? {
           $or: [
@@ -69,14 +69,18 @@ exports.getOrder = async (req, res, next) => {
           ],
         }
       : {};
-    const startItem = (req.query.page - 1) * pageSize;
-    const endItem = req.query.page * pageSize;
+
+    if (req.query?.page == null) {
+      req.query.page = 1;
+    }
+
+    const startItem = (req.query?.page - 1) * pageSize;
+    const endItem = req.query?.page * pageSize;
     const allOrder = await Order.find(queryObj).sort({ createdAt: -1 }).exec();
     const total = allOrder.length;
     const order = allOrder.slice(startItem, endItem);
 
-    console.log(order);
-    res.send({ total, order });
+    res.send({ total, entities: order });
   } catch (error) {
     console.log(error);
     res.send({
