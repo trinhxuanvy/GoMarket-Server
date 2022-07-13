@@ -15,4 +15,9 @@ router.post(
   authController.verifyToken,
   shipperController.updateShipperById,
 );
+router.get(
+  '/api/v1/shipper/order',
+  authController.verifyToken,
+  shipperController.getOrder,
+);
 module.exports = router;

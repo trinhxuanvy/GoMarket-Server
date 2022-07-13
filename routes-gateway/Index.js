@@ -375,4 +375,34 @@ router.post('/api/v1/user/Shipper/update', async (req, res, next) => {
     });
 });
 
+router.get('/api/v1/shipper/order', async (req, res, next) => {
+  try {
+    const allOrder = await axios.get(
+      `http://localhost:8000/api/v1/shipper/order`,
+      { headers: req.headers },
+    );
+
+    if (allOrder.data.status !== 200) {
+      return res.send({
+        status: 404,
+        message: 'Error',
+      });
+    }
+
+    console.log(allOrder);
+
+    res.send({
+      status: 200,
+      data: {
+        orders: allOrder.data?.data,
+      },
+    });
+  } catch (error) {
+    res.send({
+      status: 404,
+      message: 'Error',
+    });
+  }
+});
+
 module.exports = router;
