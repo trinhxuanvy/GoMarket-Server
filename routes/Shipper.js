@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get(`/api/v1/shipper/store/:_id`, shipperController.getShipperByStoreId);
 router.get('/api/v1/shipper/order', shipperController.getOrder);
+router.patch('/api/v1/shipper/order/:_id', shipperController.updateStatus);
 router.get(`/api/v1/shipper/:_id`, shipperController.getShipperById);
 
 router.get(

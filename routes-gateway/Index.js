@@ -377,9 +377,8 @@ router.post('/api/v1/user/Shipper/update', async (req, res, next) => {
 
 router.get('/api/v1/shipper/order', async (req, res, next) => {
   try {
-    console.log('gateway');
     const allOrder = await axios.get(
-      `http://localhost:8000/api/v1/shipper/order`,
+      withQuery(`http://localhost:8000/api/v1/Shipper/order`, req.query),
       { headers: req.headers },
     );
 
@@ -403,5 +402,31 @@ router.get('/api/v1/shipper/order', async (req, res, next) => {
     });
   }
 });
+router.patch('/api/v1/shipper/order/:_id', async (req, res, next) => {
+  try {
+    const result = await axios.put(
+      withQuery(`http://localhost:8000/api/v1/Shipper/order/`, req.params._id),
+      { headers: req.headers },
+    );
 
+    if (result.status !== 200) {
+      return res.send({
+        status: 404,
+        message: 'Error',
+      });
+    }
+
+    res.send({
+      status: 200,
+      data: {
+        orders: allOrder.data,
+      },
+    });
+  } catch (error) {
+    res.send({
+      status: 404,
+      message: 'Error',
+    });
+  }
+});
 module.exports = router;
