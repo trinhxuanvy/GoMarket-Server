@@ -1,5 +1,4 @@
 const Shipper = require('../models/Shipper');
-const Order = require('../models/Order');
 const pageSize = 5;
 
 exports.getShipperById = async (req, res, next) => {
@@ -61,57 +60,23 @@ exports.updateShipperById = async (req, res, next) => {
 
 exports.getOrder = async (req, res, next) => {
   try {
-    const queryObj = req.query?.search
-      ? {
-          $or: [
-            { status: { $regex: req.query.search, $options: 'i' } },
-            { phone: { $regex: req.query.search, $options: 'i' } },
-          ],
-        }
-      : {};
-
-    if (req.query?.page == null) {
-      req.query.page = 1;
-    }
-
-    const startItem = (req.query?.page - 1) * pageSize;
-    const endItem = req.query?.page * pageSize;
-    const allOrder = await Order.find(queryObj).sort({ createdAt: -1 }).exec();
-    const total = allOrder.length;
-    const order = allOrder.slice(startItem, endItem);
-
-    res.send({ total, entities: order });
-  } catch (error) {
-    console.log(error);
-    res.send({
-      status: 500,
-      message: { error },
-    });
-  }
-};
-
-exports.updateStatus = async (req, res, next) => {
-  try {
-    const queryObj = req.query?.search
-      ? {
-          $or: [
-            { status: { $regex: req.query.search, $options: 'i' } },
-            { phone: { $regex: req.query.search, $options: 'i' } },
-          ],
-        }
-      : {};
-
-    if (req.query?.page == null) {
-      req.query.page = 1;
-    }
-
-    const startItem = (req.query?.page - 1) * pageSize;
-    const endItem = req.query?.page * pageSize;
-    const allOrder = await Order.find(queryObj).sort({ createdAt: -1 }).exec();
-    const total = allOrder.length;
-    const order = allOrder.slice(startItem, endItem);
-
-    res.send({ total, entities: order });
+    // const queryObj = req.query?.search
+    //   ? {
+    //       $or: [
+    //         { status: { $regex: req.query.search, $options: 'i' } },
+    //         { phone: { $regex: req.query.search, $options: 'i' } },
+    //       ],
+    //     }
+    //   : {};
+    // if (req.query?.page == null) {
+    //   req.query.page = 1;
+    // }
+    // const startItem = (req.query?.page - 1) * pageSize;
+    // const endItem = req.query?.page * pageSize;
+    // const allOrder = await Order.find(queryObj).sort({ createdAt: -1 }).exec();
+    // const total = allOrder.length;
+    // const order = allOrder.slice(startItem, endItem);
+    // res.send({ total, entities: order });
   } catch (error) {
     console.log(error);
     res.send({

@@ -377,9 +377,21 @@ router.post('/api/v1/user/Shipper/update', async (req, res, next) => {
 
 router.get('/api/v1/shipper/order', async (req, res, next) => {
   try {
+    const user = await axios.get(`http://localhost:8000/api/v1/shipper/byId`, {
+      headers: {
+        'content-type': 'application/json',
+        authorization: req.headers?.authorization,
+      },
+    });
+
     const allOrder = await axios.get(
-      withQuery(`http://localhost:8000/api/v1/Shipper/order`, req.query),
-      { headers: req.headers },
+      `http://localhost:8001/api/v1/order/store/:_id/shipping`,
+      {
+        headers: {
+          'content-type': 'application/json',
+          authorization: req.headers?.authorization,
+        },
+      },
     );
 
     if (allOrder.status !== 200) {

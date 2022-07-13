@@ -49,8 +49,8 @@ const Shipper = new Schema(
       required: true,
     },
     storeId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Store',
+      type: String,
+      required: false,
     },
     ward: { type: String, default: '' },
     district: { type: String, default: '' },

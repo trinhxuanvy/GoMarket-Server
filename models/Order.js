@@ -3,9 +3,18 @@ const Schema = mongoose.Schema;
 
 const Order = new Schema(
   {
-    customerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
-    shipperId: { type: Schema.Types.ObjectId, ref: 'Shipper', required: true },
+    customerId: {
+      type: String,
+      required: true,
+    },
+    storeId: {
+      type: String,
+      required: true,
+    },
+    shipperId: {
+      type: String,
+      required: true,
+    },
     deliveryFeeOfShipper: {
       type: Number,
       default: 0,

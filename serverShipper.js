@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const route = require('./routes-order');
+const route = require('./routes-shipper');
 const sms = require('./services/sms');
 
 dotenv.config();
@@ -14,7 +14,7 @@ route(server);
 const port = 8001;
 
 mongoose
-  .connect(process.env.CONNECT_DATABASE_ORDER, {
+  .connect(process.env.CONNECT_DATABASE_SHIPPER, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
