@@ -1,21 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const route = require('./routes');
+const route = require('./routes-shipper');
 const sms = require('./services/sms');
 
 dotenv.config();
 
 const server = express();
-
 server.use(express.urlencoded({ extended: true, limit: '50mb' }));
 server.use(express.json({ limit: '50mb' }));
-route(server);
 
-const port = 8000;
+route(server);
+const port = 8001;
 
 mongoose
-  .connect(process.env.CONNECT_DATABASE, {
+  .connect(process.env.CONNECT_DATABASE_SHIPPER, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
