@@ -1,10 +1,9 @@
-
-const categoryRouter = require("./Category");
-const userRouter = require("./User");
-const storeRouter = require("./Store");
-const orderRouter = require("./Order");
-const uploadFileRoute = require("./UploadFile");
-const authRouter = require("./Auth");
+const categoryRouter = require('./Category');
+const userRouter = require('./User');
+const storeRouter = require('./Store');
+const orderRouter = require('./Order');
+const uploadFileRoute = require('./UploadFile');
+const authRouter = require('./Auth');
 const productRouter = require('./Product');
 
 function route(app) {
