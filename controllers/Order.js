@@ -14,10 +14,11 @@ exports.getOrderByShiperId = async (req, res, next) => {
 };
 exports.getOrderForShippingByStoreId = async (req, res, next) => {
   try {
+    console.log(req.params._id);
     const order = await Order.find({
       storeId: req.params._id,
-      status: 'Confirmed',
     });
+    console.log(order);
     res.send(order);
   } catch (error) {
     res.send({

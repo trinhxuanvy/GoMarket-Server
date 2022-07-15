@@ -7,10 +7,7 @@ const Order = new Schema(
       type: String,
       required: true,
     },
-    storeId: {
-      type: String,
-      required: true,
-    },
+    storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
     shipperId: {
       type: String,
       required: true,

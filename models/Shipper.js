@@ -50,7 +50,7 @@ const Shipper = new Schema(
     },
     storeId: {
       type: String,
-      required: false,
+      default: '',
     },
     ward: { type: String, default: '' },
     district: { type: String, default: '' },
@@ -61,10 +61,6 @@ const Shipper = new Schema(
     address: {
       type: String,
       default: '',
-    },
-    cart: {
-      type: Array,
-      default: [],
     },
     delivery: [
       {
