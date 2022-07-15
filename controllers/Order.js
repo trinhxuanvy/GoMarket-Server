@@ -1,5 +1,5 @@
 const Order = require('../models/Order');
-const User = require("../models/User");
+const User = require('../models/User');
 const { getNextOrderStatus } = require('../utils');
 
 exports.getOrderByShiperId = async (req, res, next) => {
@@ -15,12 +15,24 @@ exports.getOrderByShiperId = async (req, res, next) => {
 };
 exports.getOrderForShippingByStoreId = async (req, res, next) => {
   try {
-    console.log(req.params._id);
-    const order = await Order.find({
+    console.log(req?.query);
+    const status = req?.query?.status != null ? req?.query?.status : '';
+    var order = await Order.find({
       storeId: req.params._id,
+      status: 'Open',
+      $or: [
+        { status: { $regex: req.query.search, $options: 'i' } },
+        { paymentMethod: { $regex: req.query.search, $options: 'i' } },
+      ],
     });
-    console.log(order);
-    res.send(order);
+
+    var result = [];
+    for (let i = 0; i < order.length; i++) {
+      const cus = await User.findOne({ _id: order[i].customerId });
+      var obj = { ...order[i]._doc, customerName: cus.name };
+      result.push(obj);
+    }
+    res.send(result);
   } catch (error) {
     res.send({
       status: 500,
@@ -37,6 +49,7 @@ exports.updateOrderStatus = async (req, res, next) => {
       order.olderStatus = `${order.olderStatus} -> ${order.status}`;
     }
     order.status = getNextOrderStatus(order.status);
+    const result = await Order.updateOne({ _id: order._id }, order);
     res.send(order);
   } catch (error) {
     res.send({
@@ -52,6 +65,8 @@ exports.cancelOrder = async (req, res, next) => {
     order.olderStatus = `${order.olderStatus} -> ${order.status}`;
 
     order.status = 'Cancelled';
+    const result = await Order.updateOne({ _id: order._id }, order);
+
     res.send(order);
   } catch (error) {
     res.send({
@@ -68,22 +83,16 @@ exports.createOrder = async (req, res, next) => {
     let cart = [];
     let newcart = [];
     let newcartstore = [];
-    for(let i = 0; i < user.cart.length; i++)
-    {
-      if(user.cart[i].storeId == storeId)
-      {
+    for (let i = 0; i < user.cart.length; i++) {
+      if (user.cart[i].storeId == storeId) {
         cart.push(user.cart[i]);
-      }
-      else
-      {
+      } else {
         newcart.push(user.cart[i]);
       }
     }
 
-    for(let i = 0; i < user.cartStore.length; i++)
-    {
-      if(user.cartStore[i].storeId != storeId)
-      {
+    for (let i = 0; i < user.cartStore.length; i++) {
+      if (user.cartStore[i].storeId != storeId) {
         newcartstore.push(user.cartStore[i]);
       }
     }
@@ -99,7 +108,7 @@ exports.createOrder = async (req, res, next) => {
         province: req.body.province,
         address: req.body.address,
       },
-      orderDetails: cart
+      orderDetails: cart,
     });
 
     console.log(newOrder);
@@ -110,22 +119,25 @@ exports.createOrder = async (req, res, next) => {
       user.cart = newcart;
       user.cartStore = newcartstore;
       console.log(user);
-      await User.updateMany({ _id: user._id }, {$pull: { cartStore: {storeId: storeId} },  cart: newcart})
+      await User.updateMany(
+        { _id: user._id },
+        { $pull: { cartStore: { storeId: storeId } }, cart: newcart },
+      );
       let cartAmount = 0;
       for (let i = 0; i < user.cart.length; i++) {
         cartAmount += user.cart[i].amount;
       }
-      res.send({user: JSON.stringify(user), cartAmount});
+      res.send({ user: JSON.stringify(user), cartAmount });
     } else {
       res.send({
         status: 500,
-        message: { err: "An error occurred" },
+        message: { err: 'An error occurred' },
       });
     }
   } catch (error) {
     res.send({
       status: 500,
-      message: { err: "An error occurred" },
+      message: { err: 'An error occurred' },
     });
   }
 };
