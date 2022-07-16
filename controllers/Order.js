@@ -16,10 +16,18 @@ exports.getOrderByShiperId = async (req, res, next) => {
 exports.getOrderForShippingByStoreId = async (req, res, next) => {
   try {
     console.log(req?.query);
+    console.log(req.params?.shipperId);
     const status = req?.query?.status != null ? req?.query?.status : '';
     var order = await Order.find({
+      $or: [
+        {
+          status: 'Open',
+        },
+        {
+          shipperId: req.params?.shipperId,
+        },
+      ],
       storeId: req.params._id,
-      status: 'Open',
       $or: [
         { status: { $regex: req.query.search, $options: 'i' } },
         { paymentMethod: { $regex: req.query.search, $options: 'i' } },

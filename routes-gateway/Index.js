@@ -455,7 +455,7 @@ router.get('/api/v1/shipper/order', async (req, res, next) => {
 
     const allOrder = await axios.get(
       withQuery(
-        `http://localhost:8000/api/v1/order/store/${shipper?.data?.data?.user?.storeId}/shipping`,
+        `http://localhost:8000/api/v1/order/store/${shipper?.data?.data?.user?.storeId}/shipping/${shipper?.data?.data?.user?._id}`,
         req.query,
       ),
       {
@@ -471,7 +471,6 @@ router.get('/api/v1/shipper/order', async (req, res, next) => {
     // const endItem = req.query.page * pageSize;
     // const total = allOrder.length;
     // const entities = allOrder.slice(startItem, endItem);
-
     res.send({
       status: 200,
       data: {
