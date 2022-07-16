@@ -10,7 +10,7 @@ const Order = new Schema(
     storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
     shipperId: {
       type: String,
-      required: true,
+      default: '',
     },
     deliveryFeeOfShipper: {
       type: Number,
@@ -19,7 +19,7 @@ const Order = new Schema(
     paymentMethod: {
       type: String,
       required: true,
-      default: 'Cod'
+      default: 'Cod',
     },
     status: {
       type: String,
@@ -56,8 +56,9 @@ const Order = new Schema(
       type: Boolean,
       default: false,
     },
-    orderDetails: [{
-      productId: {
+    orderDetails: [
+      {
+        productId: {
           type: Schema.Types.ObjectId,
           required: true,
         },
@@ -78,7 +79,8 @@ const Order = new Schema(
           type: Number,
           required: true,
         },
-  }]
+      },
+    ],
   },
   {
     timestamps: true,

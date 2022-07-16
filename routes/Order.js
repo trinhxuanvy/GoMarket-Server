@@ -5,11 +5,15 @@ const router = express.Router();
 
 router.get(`/api/v1/order/shipper/:_id`, orderController.getOrderByShiperId);
 router.get(
-  `/api/v1/order/store/:_id/shipping`,
+  `/api/v1/order/store/:_id/shipping/:shipperId`,
   orderController.getOrderForShippingByStoreId,
 );
 router.patch(`/api/v1/order/:_id/status`, orderController.updateOrderStatus);
 router.patch(`/api/v1/order/:_id/cancel`, orderController.cancelOrder);
-router.post(`/api/v1/createorder`,authController.verifyToken, orderController.createOrder);
+router.post(
+  `/api/v1/createorder`,
+  authController.verifyToken,
+  orderController.createOrder,
+);
 
 module.exports = router;

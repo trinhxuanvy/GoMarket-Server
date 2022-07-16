@@ -22,7 +22,7 @@ router.get('/api/v1/:apiName', (req, res) => {
 router.post('/api/v1/:apiName', async (req, res) => {
   console.log('đwqjdbhfcd');
   switch (req.params.apiName.toLowerCase()) {
-    case "uploadfile":
+    case 'uploadfile':
       // console.log("oke");
       axios
         .post(`http://localhost:8000/api/v1/${req.params.apiName}`, req.body)
@@ -43,21 +43,25 @@ router.post('/api/v1/:apiName', async (req, res) => {
           res.send({ message: 'Error' });
         });
       break;
-    case "createorder":
+    case 'createorder':
       console.log(req.body);
       axios
-        .post(`http://localhost:8000/api/v1/${req.params.apiName}`, {...req.body['0'], id: req.body['id']}, {
-          headers: {
-            "content-type": "application/json",
-            authorization: req.headers?.authorization,
+        .post(
+          `http://localhost:8000/api/v1/${req.params.apiName}`,
+          { ...req.body['0'], id: req.body['id'] },
+          {
+            headers: {
+              'content-type': 'application/json',
+              authorization: req.headers?.authorization,
+            },
           },
-        })
+        )
         .then((response) => {
           console.log(response.data);
           res.send(response.data);
         })
         .catch(() => {
-          res.send({ message: "Error" });
+          res.send({ message: 'Error' });
         });
       break;
     default:
@@ -84,8 +88,8 @@ router.post('/api/v1/:apiName', async (req, res) => {
   }
 });
 
-router.post("/api/v1/user/addcart", (req, res) => {
-  console.log("hello");
+router.post('/api/v1/user/addcart', (req, res) => {
+  console.log('hello');
   console.log(req.body, req.headers);
   axios
     .post(`http://localhost:8000/api/v1/user/addcart`, req.body, {
@@ -96,11 +100,11 @@ router.post("/api/v1/user/addcart", (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      res.send({ message: "Error" });
+      res.send({ message: 'Error' });
     });
 });
 
-router.post("/api/v1/store/verify", (req, res) => {
+router.post('/api/v1/store/verify', (req, res) => {
   axios
     .post(`http://localhost:8000/api/v1/store/verify`, req.body, {
       headers: req.headers,
@@ -140,7 +144,7 @@ router.put('/api/v1/:apiName', (req, res) => {
     });
 });
 
-router.get("/api/v1/:apiName/byId", (req, res) => {
+router.get('/api/v1/:apiName/byId', (req, res) => {
   const queryUrl = `http://localhost:8000/api/v1/${req.params.apiName}`;
   axios
     .get(queryUrl, { headers: req.headers })
@@ -149,8 +153,8 @@ router.get("/api/v1/:apiName/byId", (req, res) => {
       res.send(response.data);
     })
     .catch(() => {
-      console.log("lỗi");
-      res.send({ message: "Error" });
+      console.log('lỗi');
+      res.send({ message: 'Error' });
     });
 });
 
@@ -292,7 +296,7 @@ router.get('/api/v1/store/profile', (req, res) => {
 //     });
 // });
 
-router.get("/api/v1/page/manage-store/all-store", async (req, res) => {
+router.get('/api/v1/page/manage-store/all-store', async (req, res) => {
   try {
     const allStore = await axios.get(
       `http://localhost:8000/api/v1/store/byOwnerId`,
@@ -450,7 +454,10 @@ router.get('/api/v1/shipper/order', async (req, res, next) => {
     }
 
     const allOrder = await axios.get(
-      `http://localhost:8000/api/v1/order/store/${shipper?.data?.data?.user?.storeId}/shipping`,
+      withQuery(
+        `http://localhost:8000/api/v1/order/store/${shipper?.data?.data?.user?.storeId}/shipping/${shipper?.data?.data?.user?._id}`,
+        req.query,
+      ),
       {
         headers: {
           'content-type': 'application/json',
@@ -459,6 +466,11 @@ router.get('/api/v1/shipper/order', async (req, res, next) => {
       },
     );
 
+    // const pageSize = 5;
+    // const startItem = (req.query.page - 1) * pageSize;
+    // const endItem = req.query.page * pageSize;
+    // const total = allOrder.length;
+    // const entities = allOrder.slice(startItem, endItem);
     res.send({
       status: 200,
       data: {
@@ -466,6 +478,48 @@ router.get('/api/v1/shipper/order', async (req, res, next) => {
       },
     });
   } catch (error) {
+    res.send({
+      status: 404,
+      message: 'Error',
+    });
+  }
+});
+router.put('/api/v1/shipper/order/:_id/status', async (req, res, next) => {
+  try {
+    console.log(req.params._id);
+
+    const shipper = await axios.patch(
+      `http://localhost:8000/api/v1/order/${req.params._id}/status`,
+    );
+    res.send({
+      status: 200,
+      data: {
+        message: 'OK',
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      status: 404,
+      message: 'Error',
+    });
+  }
+});
+router.put('/api/v1/shipper/order/:_id/cancel', async (req, res, next) => {
+  try {
+    console.log(req.params._id);
+
+    const shipper = await axios.patch(
+      `http://localhost:8000/api/v1/order/${req.params._id}/cancel`,
+    );
+    res.send({
+      status: 200,
+      data: {
+        message: 'OK',
+      },
+    });
+  } catch (error) {
+    console.log(error);
     res.send({
       status: 404,
       message: 'Error',
