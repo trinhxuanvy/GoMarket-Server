@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get(`/api/v1/order/shipper/:_id`, orderController.getOrderByShiperId);
 router.get(
-  `/api/v1/order/store/:_id/shipping`,
+  `/api/v1/order/store/:_id/shipping/:shipperId`,
   orderController.getOrderForShippingByStoreId,
 );
 router.patch(`/api/v1/order/:_id/status`, orderController.updateOrderStatus);
