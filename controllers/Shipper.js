@@ -26,7 +26,6 @@ exports.getShipperByStoreId = async (req, res, next) => {
 
 exports.getShipperByIdGateWay = async (req, res, next) => {
   try {
-    console.log(req.data);
     const user = await Shipper.findById(req.data?.id);
     res.send({
       status: 200,

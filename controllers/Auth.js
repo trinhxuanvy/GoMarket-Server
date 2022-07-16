@@ -1,13 +1,12 @@
-const Admin = require("../models/Admin");
-const User = require("../models/User");
-const jwt = require("jsonwebtoken");
-const { async } = require("@firebase/util");
-const { json } = require("express");
+const Admin = require('../models/Admin');
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const { async } = require('@firebase/util');
+const { json } = require('express');
 const Shipper = require('../models/Shipper');
 
 exports.verifyToken = (req, res, next) => {
   const bearerHeader = req.headers?.authorization;
-
   if (bearerHeader !== undefined) {
     const bearer = bearerHeader.split(' ');
 

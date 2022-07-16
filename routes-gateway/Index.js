@@ -89,13 +89,13 @@ router.post('/api/v1/:apiName', async (req, res) => {
 });
 
 router.get('/api/v1/user/orders', async (req, res, next) => {
-  console.log("vo day ne")
+  console.log('vo day ne');
   axios
     .get(`http://localhost:8000/api/v1/user/orders`, {
       headers: {
-        "content-type": "application/json",
-        authorization: req.headers?.authorization
-      }
+        'content-type': 'application/json',
+        authorization: req.headers?.authorization,
+      },
     })
     .then((response) => {
       res.send(response.data);
@@ -105,8 +105,8 @@ router.get('/api/v1/user/orders', async (req, res, next) => {
     });
 });
 
-router.post("/api/v1/user/addcart", (req, res) => {
-  console.log("hello");
+router.post('/api/v1/user/addcart', (req, res) => {
+  console.log('hello');
   console.log(req.body, req.headers);
   axios
     .post(`http://localhost:8000/api/v1/user/addcart`, req.body, {
@@ -503,15 +503,29 @@ router.get('/api/v1/shipper/order', async (req, res, next) => {
 });
 router.put('/api/v1/shipper/order/:_id/status', async (req, res, next) => {
   try {
-    console.log(req.params._id);
-
+    const shipperInfo = await axios.get(
+      `http://localhost:8001/api/v1/shipper/byId`,
+      {
+        headers: {
+          'content-type': 'application/json',
+          authorization: req.headers?.authorization,
+        },
+      },
+    );
     const shipper = await axios.patch(
       `http://localhost:8000/api/v1/order/${req.params._id}/status`,
+      { shipperId: shipperInfo.data.data.user._id },
+      {
+        headers: {
+          'content-type': 'application/json',
+          authorization: req.headers?.authorization,
+        },
+      },
     );
     res.send({
       status: 200,
       data: {
-        message: 'OK',
+        entity: shipper.data,
       },
     });
   } catch (error) {
@@ -524,8 +538,6 @@ router.put('/api/v1/shipper/order/:_id/status', async (req, res, next) => {
 });
 router.put('/api/v1/shipper/order/:_id/cancel', async (req, res, next) => {
   try {
-    console.log(req.params._id);
-
     const shipper = await axios.patch(
       `http://localhost:8000/api/v1/order/${req.params._id}/cancel`,
     );

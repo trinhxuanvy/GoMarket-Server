@@ -16,7 +16,7 @@ exports.getOrderByShiperId = async (req, res, next) => {
 
 exports.getOrderByCustomerId = async (req, res, next) => {
   try {
-    const order = await Order.find( {customerId: req.data.id});
+    const order = await Order.find({ customerId: req.data.id });
     console.log(req.data.id);
     console.log(order);
     res.send(order);
@@ -30,19 +30,17 @@ exports.getOrderByCustomerId = async (req, res, next) => {
 
 exports.getOrderForShippingByStoreId = async (req, res, next) => {
   try {
-    console.log(req?.query);
-    console.log(req.params?.shipperId);
     const status = req?.query?.status != null ? req?.query?.status : '';
     var order = await Order.find({
       $or: [
         {
           status: 'Open',
+          storeId: req.params._id,
         },
         {
           shipperId: req.params?.shipperId,
         },
       ],
-      storeId: req.params._id,
       $or: [
         { status: { $regex: req.query.search, $options: 'i' } },
         { paymentMethod: { $regex: req.query.search, $options: 'i' } },
@@ -71,7 +69,12 @@ exports.updateOrderStatus = async (req, res, next) => {
     } else {
       order.olderStatus = `${order.olderStatus} -> ${order.status}`;
     }
+    if (order.status == 'Open') {
+      order.shipperId = req.body?.shipperId;
+    }
+
     order.status = getNextOrderStatus(order.status);
+
     const result = await Order.updateOne({ _id: order._id }, order);
     res.send(order);
   } catch (error) {
