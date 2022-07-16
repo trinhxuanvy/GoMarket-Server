@@ -84,6 +84,23 @@ router.post('/api/v1/:apiName', async (req, res) => {
   }
 });
 
+router.get('/api/v1/user/orders', async (req, res, next) => {
+  console.log("vo day ne")
+  axios
+    .get(`http://localhost:8000/api/v1/user/orders`, {
+      headers: {
+        "content-type": "application/json",
+        authorization: req.headers?.authorization
+      }
+    })
+    .then((response) => {
+      res.send(response.data);
+    })
+    .catch((error) => {
+      res.status(404).send({ status: 404, message: 'Error' });
+    });
+});
+
 router.post("/api/v1/user/addcart", (req, res) => {
   console.log("hello");
   console.log(req.body, req.headers);

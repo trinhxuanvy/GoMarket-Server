@@ -11,5 +11,6 @@ router.get(
 router.patch(`/api/v1/order/:_id/status`, orderController.updateOrderStatus);
 router.patch(`/api/v1/order/:_id/cancel`, orderController.cancelOrder);
 router.post(`/api/v1/createorder`,authController.verifyToken, orderController.createOrder);
+router.get(`/api/v1/user/orders`,authController.verifyToken, orderController.getOrderByCustomerId);
 
 module.exports = router;

@@ -13,6 +13,21 @@ exports.getOrderByShiperId = async (req, res, next) => {
     });
   }
 };
+
+exports.getOrderByCustomerId = async (req, res, next) => {
+  try {
+    const order = await Order.find( {customerId: req.data.id});
+    console.log(req.data.id);
+    console.log(order);
+    res.send(order);
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: { err: 'An error occurred' },
+    });
+  }
+};
+
 exports.getOrderForShippingByStoreId = async (req, res, next) => {
   try {
     console.log(req.params._id);
