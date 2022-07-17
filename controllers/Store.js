@@ -1,6 +1,6 @@
 const Store = require("../models/Store");
 const jwt = require("jsonwebtoken");
-const pageSize = 2;
+const pageSize = 8;
 
 exports.getStoreById = async (req, res, next) => {
   try {

@@ -1,24 +1,34 @@
-const express = require('express');
-const orderController = require('../controllers/Order');
-const authController = require('../controllers/Auth');
+const express = require("express");
+const orderController = require("../controllers/Order");
+const authController = require("../controllers/Auth");
 const router = express.Router();
 
 router.get(`/api/v1/order/shipper/:_id`, orderController.getOrderByShiperId);
 router.get(
   `/api/v1/order/store/:_id/shipping/:shipperId`,
-  orderController.getOrderForShippingByStoreId,
+  orderController.getOrderForShippingByStoreId
 );
 router.patch(`/api/v1/order/:_id/status`, orderController.updateOrderStatus);
 router.patch(`/api/v1/order/:_id/cancel`, orderController.cancelOrder);
 router.post(
   `/api/v1/createorder`,
   authController.verifyToken,
-  orderController.createOrder,
+  orderController.createOrder
 );
 router.get(
   `/api/v1/user/orders`,
   authController.verifyToken,
-  orderController.getOrderByCustomerId,
+  orderController.getOrderByCustomerId
+);
+router.get(
+  `/api/v1/Order/Store/:id`,
+  authController.verifyToken,
+  orderController.getOrderByStoreId
+);
+router.get(
+  `/api/v1/Order/Store/Detail/:id`,
+  authController.verifyToken,
+  orderController.getOrderDetailByOrderId
 );
 router.get(
   `/api/v1/user/order/orderdetails/:id`,

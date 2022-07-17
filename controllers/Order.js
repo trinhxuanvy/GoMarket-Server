@@ -1,6 +1,6 @@
-const Order = require('../models/Order');
-const User = require('../models/User');
-const { getNextOrderStatus } = require('../utils');
+const Order = require("../models/Order");
+const User = require("../models/User");
+const { getNextOrderStatus } = require("../utils");
 
 exports.getOrderByShiperId = async (req, res, next) => {
   try {
@@ -9,7 +9,7 @@ exports.getOrderByShiperId = async (req, res, next) => {
   } catch (error) {
     res.send({
       status: 500,
-      message: { err: 'An error occurred' },
+      message: { err: "An error occurred" },
     });
   }
 };
@@ -23,7 +23,7 @@ exports.getOrderByCustomerId = async (req, res, next) => {
   } catch (error) {
     res.send({
       status: 500,
-      message: { err: 'An error occurred' },
+      message: { err: "An error occurred" },
     });
   }
 };
@@ -62,11 +62,11 @@ exports.updateRatingOrder = async (req, res, next) => {
 
 exports.getOrderForShippingByStoreId = async (req, res, next) => {
   try {
-    const status = req?.query?.status != null ? req?.query?.status : '';
+    const status = req?.query?.status != null ? req?.query?.status : "";
     var order = await Order.find({
       $or: [
         {
-          status: 'Open',
+          status: "Open",
           storeId: req.params._id,
         },
         {
@@ -74,8 +74,8 @@ exports.getOrderForShippingByStoreId = async (req, res, next) => {
         },
       ],
       $or: [
-        { status: { $regex: req.query.search, $options: 'i' } },
-        { paymentMethod: { $regex: req.query.search, $options: 'i' } },
+        { status: { $regex: req.query.search, $options: "i" } },
+        { paymentMethod: { $regex: req.query.search, $options: "i" } },
       ],
     });
 
@@ -89,19 +89,19 @@ exports.getOrderForShippingByStoreId = async (req, res, next) => {
   } catch (error) {
     res.send({
       status: 500,
-      message: { err: 'An error occurred' },
+      message: { err: "An error occurred" },
     });
   }
 };
 exports.updateOrderStatus = async (req, res, next) => {
   try {
     const order = await Order.findById(req.params._id);
-    if (order.olderStatus == '') {
+    if (order.olderStatus == "") {
       order.olderStatus = order.status;
     } else {
       order.olderStatus = `${order.olderStatus} -> ${order.status}`;
     }
-    if (order.status == 'Open') {
+    if (order.status == "Open") {
       order.shipperId = req.body?.shipperId;
     }
 
@@ -112,7 +112,7 @@ exports.updateOrderStatus = async (req, res, next) => {
   } catch (error) {
     res.send({
       status: 500,
-      message: { err: 'An error occurred' },
+      message: { err: "An error occurred" },
     });
   }
 };
@@ -122,14 +122,14 @@ exports.cancelOrder = async (req, res, next) => {
 
     order.olderStatus = `${order.olderStatus} -> ${order.status}`;
 
-    order.status = 'Cancelled';
+    order.status = "Cancelled";
     const result = await Order.updateOne({ _id: order._id }, order);
 
     res.send(order);
   } catch (error) {
     res.send({
       status: 500,
-      message: { err: 'An error occurred' },
+      message: { err: "An error occurred" },
     });
   }
 };
@@ -179,7 +179,7 @@ exports.createOrder = async (req, res, next) => {
       console.log(user);
       await User.updateMany(
         { _id: user._id },
-        { $pull: { cartStore: { storeId: storeId } }, cart: newcart },
+        { $pull: { cartStore: { storeId: storeId } }, cart: newcart }
       );
       let cartAmount = 0;
       for (let i = 0; i < user.cart.length; i++) {
@@ -189,13 +189,60 @@ exports.createOrder = async (req, res, next) => {
     } else {
       res.send({
         status: 500,
-        message: { err: 'An error occurred' },
+        message: { err: "An error occurred" },
       });
     }
   } catch (error) {
     res.send({
       status: 500,
-      message: { err: 'An error occurred' },
+      message: { err: "An error occurred" },
+    });
+  }
+};
+
+exports.getOrderByStoreId = async (req, res, next) => {
+  try {
+    const orders = await Order.find({ storeId: req.params.id });
+    const customer = await User.find();
+
+    const newOrders = orders.map((o) => {
+      const cusF = customer.find((c) => c.id == o.customerId);
+
+      return {
+        ...o._doc,
+        customerName: cusF.name,
+      };
+    });
+
+    res.send({
+      status: 200,
+      data: {
+        total: newOrders.length,
+        entities: newOrders,
+      },
+    });
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: { err: "An error occurred" },
+    });
+  }
+};
+
+exports.getOrderDetailByOrderId = async (req, res, next) => {
+  try {
+    const orders = await Order.findById(req.params.id);
+    res.send({
+      status: 200,
+      data: {
+        total: orders.orderDetails.length,
+        entities: orders.orderDetails,
+      },
+    });
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: { err: "An error occurred" },
     });
   }
 };
