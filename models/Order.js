@@ -56,6 +56,10 @@ const Order = new Schema(
       type: Boolean,
       default: false,
     },
+    rating: {
+      type: String,
+      default: "",
+    },
     orderDetails: [
       {
         productId: {

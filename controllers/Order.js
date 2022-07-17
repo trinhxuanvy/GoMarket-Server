@@ -28,6 +28,38 @@ exports.getOrderByCustomerId = async (req, res, next) => {
   }
 };
 
+exports.getOrderDetailsByOrderId = async (req, res, next) => {
+  try {
+    const order = await Order.findById(req.params.id );
+    console.log(req.params.id, 'check');
+    console.log(order.orderDetails);
+    res.send(order.orderDetails);
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: { err: 'An error occurred' },
+    });
+  }
+};
+
+exports.updateRatingOrder = async (req, res, next) => {
+  try {
+    const order = await Order.findById(req.body.id);
+    const star = req.body.star;
+
+    order.rating = star;
+    
+    const result = await Order.updateOne({ _id: order._id }, order);
+
+    res.send(order);
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: { err: 'An error occurred' },
+    });
+  }
+};
+
 exports.getOrderForShippingByStoreId = async (req, res, next) => {
   try {
     const status = req?.query?.status != null ? req?.query?.status : '';

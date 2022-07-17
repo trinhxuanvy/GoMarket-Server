@@ -20,5 +20,16 @@ router.get(
   authController.verifyToken,
   orderController.getOrderByCustomerId,
 );
+router.get(
+  `/api/v1/user/order/orderdetails/:id`,
+  authController.verifyToken,
+  orderController.getOrderDetailsByOrderId,
+);
+
+router.put(
+  `/api/v1/user/order/rating`,
+  authController.verifyToken,
+  orderController.updateRatingOrder,
+);
 
 module.exports = router;
